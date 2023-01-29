@@ -79,7 +79,8 @@ public class ConfigUtils {
     }
 
     public static String configToStr(Config config) {
-        return splitSymbol + config.getDelay() + splitSymbol + (config.isStart() ? 1 : 0) + splitSymbol + config.getDefaultPath();
+        return splitSymbol + config.getDelay() + splitSymbol + (config.isStart() ? 1 : 0) + splitSymbol
+                + config.getDefaultPath() + splitSymbol + (config.isShow() ? 1 : 0);
     }
 
     public static Config strToConfig(String confStr) {
@@ -90,6 +91,7 @@ public class ConfigUtils {
                 config.setDelay(Integer.parseInt(split[0]));
                 config.setStart("1".equals(split[1]));
                 config.setDefaultPath(split[2]);
+                config.setShow("1".equals(split[3]));
             } catch (Exception ignored) {
                 System.out.println(confStr);
                 ignored.printStackTrace();
