@@ -75,7 +75,8 @@ public class Gui extends JFrame {
         this.setResizable(false);
         setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon("C:\\Users\\admin\\Desktop\\icon.png").getImage());
-        this.setVisible(true);
+        // 暂时注掉显示
+//        this.setVisible(true);
     }
 
 

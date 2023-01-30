@@ -79,7 +79,7 @@ public class ConfigUtils {
     }
 
     public static String configToStr(Config config) {
-        return splitSymbol + config.getDelay() + splitSymbol + (config.isStart() ? 1 : 0) + splitSymbol
+        return config.getDelay() + splitSymbol + (config.isStart() ? 1 : 0) + splitSymbol
                 + config.getDefaultPath() + splitSymbol + (config.isShow() ? 1 : 0);
     }
 

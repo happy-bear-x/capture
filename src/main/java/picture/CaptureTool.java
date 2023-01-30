@@ -21,7 +21,11 @@ public class CaptureTool {
         BufferedImage image = robot.createScreenCapture(screenRectangle);
         //判断文件是否存在，存在就改名字
         String fileName = imageName + "." + IMG_TYPE;
-        ImageIO.write(image, IMG_TYPE, new File(path + fileName));
+        String pathname = path + fileName;
+        while (new File(pathname).exists()) {
+            pathname = path + imageName + "_1." +IMG_TYPE;
+        }
+        ImageIO.write(image, IMG_TYPE, new File(pathname));
     }
 
 
