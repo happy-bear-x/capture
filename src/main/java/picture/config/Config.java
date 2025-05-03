@@ -21,6 +21,8 @@ public class Config implements Serializable {
 
     private boolean show = true;
 
+    private boolean autoStart = false;
+
 
     @Override
     public boolean equals(Object obj) {
@@ -39,6 +41,9 @@ public class Config implements Serializable {
                 return false;
             }
             if (this.isStart() != other.isStart()) {
+                return false;
+            }
+            if (this.isAutoStart() != other.isAutoStart()) {
                 return false;
             }
         }
@@ -79,5 +84,13 @@ public class Config implements Serializable {
 
     public void setShow(boolean show) {
         this.show = show;
+    }
+
+    public boolean isAutoStart() {
+        return autoStart;
+    }
+
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
     }
 }

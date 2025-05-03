@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 
 public class ConfigUtils {
 
+    public static String windowAutoStartPath = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp";
+
     private static String splitSymbol = "@@";
     private static Config config = Config.config;
 
@@ -60,6 +62,7 @@ public class ConfigUtils {
         if (newConfig.getDefaultPath() != null && newConfig.getDefaultPath().length() > 0) {
             config.setDefaultPath(newConfig.getDefaultPath());
         }
+        config.setAutoStart(newConfig.isAutoStart());
         File file = new File(config.getSettingFile());
         if (!file.exists()) {
             try {
@@ -80,7 +83,7 @@ public class ConfigUtils {
 
     public static String configToStr(Config config) {
         return config.getDelay() + splitSymbol + (config.isStart() ? 1 : 0) + splitSymbol
-                + config.getDefaultPath() + splitSymbol + (config.isShow() ? 1 : 0);
+                + config.getDefaultPath() + splitSymbol + (config.isShow() ? 1 : 0) + splitSymbol + (config.isAutoStart() ? 1 : 0);
     }
 
     public static Config strToConfig(String confStr) {
@@ -92,6 +95,7 @@ public class ConfigUtils {
                 config.setStart("1".equals(split[1]));
                 config.setDefaultPath(split[2]);
                 config.setShow("1".equals(split[3]));
+                config.setAutoStart(selected(split, 4));
             } catch (Exception ignored) {
                 System.out.println(confStr);
                 ignored.printStackTrace();
@@ -99,5 +103,13 @@ public class ConfigUtils {
             }
         }
         return config;
+    }
+
+    public static boolean selected(String[] arr, int idx) {
+        try {
+            return "1".equals(arr[idx]);
+        } catch (Exception e){
+        }
+        return false;
     }
 }

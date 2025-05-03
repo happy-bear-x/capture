@@ -13,6 +13,9 @@ public class App {
         ConfigUtils.getLocalSetting();
         Config config = Config.config;
         Gui gui = new Gui();
+        if (args.length == 0) {
+            gui.setVisible(true);
+        }
         new Thread(() -> Server.startServer(gui)).start();
         new Thread(() -> {
             while (true) {

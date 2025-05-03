@@ -4,17 +4,21 @@ import picture.config.Config;
 import picture.config.ConfigUtils;
 import picture.gui.CLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 public class Gui extends JFrame {
     private Config config = Config.config;
     private TextField delay = new TextField(30);
     private JRadioButton enable = new JRadioButton("启用");
     private JRadioButton disable = new JRadioButton("停用");
+    private JCheckBox autoStart = new JCheckBox();
     private ButtonGroup buttonGroup = new ButtonGroup();
     private String path = config.getDefaultPath();
+    static String appName = "Windows 启动应用程序";
 
     {
         delay.setText(config.getDelay() + "");
@@ -23,8 +27,7 @@ public class Gui extends JFrame {
     }
 
     public Gui() throws HeadlessException {
-
-        super("便签");
+        super(appName);
         this.setBounds(500, 350, 300, 250);
         this.setLayout(null);
         this.add(new CLayout(0, delay));
@@ -34,6 +37,7 @@ public class Gui extends JFrame {
         } else {
             disable.setSelected(true);
         }
+        autoStart.setSelected(config.isAutoStart());
         this.add(new CLayout(50, new JLabel("状态："), enable, disable));
         JLabel patchLabel = new JLabel("<html><a href=''>" + path + "</a></html>");
         patchLabel.setSize(100, 20);
@@ -52,7 +56,8 @@ public class Gui extends JFrame {
             }
 
         });
-        this.add(new CLayout(100, new JLabel("目录："), patchLabel));
+        this.add(new CLayout(85, new JLabel("目录："), patchLabel));
+        this.add(new CLayout(110, new JLabel("开机启动："), autoStart));
         JButton confirm = new JButton("确定");
         JButton hid = new JButton("隐藏");
         confirm.addActionListener(e -> {
@@ -63,6 +68,19 @@ public class Gui extends JFrame {
                 config.setDelay(delay);
                 config.setStart(enable.isSelected());
                 config.setDefaultPath(path);
+                config.setAutoStart(false);
+                try {
+                    String appPath = System.getProperty("user.dir") + "\\Windows 启动应用程序.exe auto"; // 替换为你的程序路径
+                    System.out.println(appPath);
+                    if (autoStart.isSelected()) {
+                        Runtime.getRuntime().exec(new String[]{"reg", "add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", "/v", appName, "/t", "REG_SZ", "/d", appPath, "/f"});
+                        config.setAutoStart(true);
+                    } else {
+                        Runtime.getRuntime().exec(new String[]{"reg", "delete", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", "/v", appName, "/f"});
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "设置开机启动失败：" + ex.getMessage());
+                }
                 ConfigUtils.updateConfig(config);
                 JOptionPane.showMessageDialog(null, "操作成功");
             } else {
@@ -74,7 +92,12 @@ public class Gui extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
         setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon("C:\\Users\\admin\\Desktop\\icon.png").getImage());
+        try {
+            Image icon = ImageIO.read(getClass().getResource("/icon.png"));
+            setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // 暂时注掉显示
 //        this.setVisible(true);
     }
